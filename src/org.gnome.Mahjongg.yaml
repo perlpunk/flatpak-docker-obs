@@ -1,0 +1,25 @@
+app-id: org.gnome.Mahjongg
+runtime: org.gnome.Platform
+sdk: org.gnome.Sdk
+runtime-version: '3.36'
+command: gnome-mahjongg
+
+finish-args:
+  - --share=ipc
+  - --socket=fallback-x11
+  - --socket=wayland
+  - --device=dri
+  - --metadata=X-DConf=migrate-path=/org/gnome/Mahjongg/
+
+cleanup:
+  - "/share/man"
+
+modules:
+- name: gnome-mahjongg
+  buildsystem: meson
+  sources:
+  - type: archive
+#    url: https://download.gnome.org/sources/gnome-mahjongg/3.36/gnome-mahjongg-3.36.2.tar.xz
+    sha256: 'd2e8f1563ee03d112a17042c4e99971295b36f3ba795c7d905d636cc94b8ae97'
+    url: file:///source/gnome-mahjongg-3.36.2.tar.xz
+

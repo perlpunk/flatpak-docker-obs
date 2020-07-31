@@ -1,0 +1,39 @@
+FROM opensuse/leap:15.1
+
+RUN zypper refresh && zypper -n install \
+    xeyes \
+    gzip \
+    flatpak \
+    flatpak-builder \
+    xz \
+    librsvg \
+    gdk-pixbuf-loader-rsvg \
+  && true
+
+RUN zypper addrepo -G https://download.opensuse.org/repositories/home:/tinita:/flatpak-base-64/openSUSE_Leap_15.1/home:tinita:flatpak-base-64.repo
+
+
+RUN zypper -n in \
+    org.freedesktop.Platform.GL.default \
+    org.gnome.Platform \
+    org.freedesktop.Platform.openh264 \
+    org.freedesktop.Platform.VAAPI.Intel \
+    org.gnome.Sdk \
+    org.gnome.Sdk.Locale \
+    && mkdir -p /var/lib/flatpak/runtime && cd /var/lib/flatpak/runtime \
+    && tar xf /var/lib/flatpak/tars/org.freedesktop.Platform.VAAPI.Intel-19.08.x86_64.tar.gz \
+    && tar xf /var/lib/flatpak/tars/org.freedesktop.Platform.openh264-2.0.x86_64.tar.gz \
+    && tar xf /var/lib/flatpak/tars/org.gnome.Platform-3.36.x86_64.tar.gz \
+    && tar xf /var/lib/flatpak/tars/org.gnome.Platform.Locale-3.36.x86_64.tar.gz \
+    && tar xf /var/lib/flatpak/tars/org.freedesktop.Platform.GL.default-19.08.x86_64.tar.gz \
+    && tar xf /var/lib/flatpak/tars/org.gnome.Sdk-3.36.x86_64.tar.gz \
+    && tar xf /var/lib/flatpak/tars/org.gnome.Sdk.Locale-3.36.x86_64.tar.gz \
+    && rm /var/lib/flatpak/tars/*.tar.gz \
+  && true
+
+#RUN flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
+#RUN flatpak install -y flathub runtime/org.gnome.Sdk/x86_64/3.36
+#RUN flatpak install -y flathub runtime/org.gnome.Platform/x86_64/3.36
+#RUN flatpak install -y flathub runtime/org.freedesktop.Platform.ffmpeg/x86_64/1.6
+#RUN flatpak install -y flathub runtime/org.kde.Sdk/x86_64/5.14
+#RUN flatpak install -y flathub runtime/org.kde.Platform/x86_64/5.14

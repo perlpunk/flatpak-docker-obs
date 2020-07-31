@@ -1,1 +1,13 @@
 test flatpak in docker
+
+    make docker-rpm # this can take a while and create an image around 5G
+
+    # prepare for running gui in docker
+    export XSOCK=/tmp/.X11-unix
+    export XAUTH=/tmp/.docker.xauth
+    xauth nlist :0 | sed -e 's/^..../ffff/' | xauth -f $(XAUTH) nmerge -
+
+    make build-mahjongg
+    make install-run-mahjongg # should open Mahjongg
+    make build-chess
+    make install-run-chess # should open Chess

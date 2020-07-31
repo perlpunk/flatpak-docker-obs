@@ -1,0 +1,100 @@
+{
+    "id": "org.telegram.desktop",
+    "runtime": "org.kde.Platform",
+    "runtime-version": "5.14",
+    "sdk": "org.kde.Sdk",
+    "default-branch": "stable",
+    "command": "telegram-desktop",
+    "rename-icon": "telegram",
+    "finish-args": [ "--share=ipc",
+                     "--share=network",
+                     "--socket=x11",
+                     "--socket=wayland",
+                     "--device=dri",
+                     "--socket=pulseaudio",
+                     "--talk-name=org.kde.StatusNotifierWatcher",
+                     "--talk-name=org.freedesktop.Notifications",
+                     "--talk-name=com.canonical.Unity",
+                     "--talk-name=com.canonical.indicator.application",
+                     "--talk-name=org.ayatana.indicator.application",
+                     "--talk-name=org.freedesktop.portal.Fcitx",
+                     "--talk-name=org.freedesktop.ScreenSaver",
+                     "--talk-name=org.gnome.Mutter.IdleMonitor",
+                     "--filesystem=xdg-download"],
+    "add-extensions": {
+        "org.freedesktop.Platform.ffmpeg-full": {
+            "directory": "lib/ffmpeg",
+            "add-ld-path": ".",
+            "version": "19.08",
+            "autodownload": true,
+            "autodelete": false
+        }
+    },
+    "cleanup-commands": [
+        "mkdir -p ${FLATPAK_DEST}/lib/ffmpeg"
+    ],
+    "cleanup": [ "/cache",
+                 "/man",
+                 "/share/man",
+                 "/lib/systemd",
+                 "/include",
+                 "/lib/pkgconfig",
+                 "/lib/cmake",
+                 "*.la", "*.a"],
+    "modules": [
+        {
+            "name": "cmake",
+            "build-options": {
+                "cflags": "-g0",
+                "cxxflags": "-g0"
+            },
+            "buildsystem": "cmake-ninja",
+            "sources": [
+                {
+                    "type": "archive",
+                    "url": "file:///source/cmake-3.16.2.tar.gz",
+                    "sha256": "8c09786ec60ca2be354c29829072c38113de9184f29928eb9da8446a5f2ce6a9"
+                }
+            ],
+            "cleanup": [ "*" ]
+        },
+        {
+            "name": "telegram-desktop",
+            "buildsystem": "cmake-ninja",
+            "builddir": true,
+            "build-options": {
+                "ldflags": "-Wl,--no-keep-memory -Wl,--reduce-memory-overheads"
+            },
+            "config-opts": [
+                "-DDESKTOP_APP_USE_PACKAGED:BOOL=ON",
+                "-DDESKTOP_APP_USE_PACKAGED_LAZY:BOOL=ON",
+                "-DDESKTOP_APP_USE_PACKAGED_LAZY_PLATFORMTHEMES:BOOL=OFF",
+                "-DDESKTOP_APP_USE_PACKAGED_FONTS:BOOL=OFF",
+                "-DTDESKTOP_LAUNCHER_BASENAME=org.telegram.desktop",
+                "-DTDESKTOP_API_ID=611335",
+                "-DTDESKTOP_API_HASH=d524b414d21f4d37f08684c1df41ac9c"
+            ],
+            "post-install": [
+                "mv /app/bin/telegram-desktop{,.bin}",
+                "install -Dm755 ../telegram-wrapper.sh /app/bin/telegram-desktop",
+                "../changelog2appdata.py -c ../changelog.txt -a /app/share/metainfo/${FLATPAK_ID}.appdata.xml -n 10"
+            ],
+            "sources": [
+                {
+                    "type": "archive",
+                    "url": "file:///source/tdesktop.zip",
+                    "tag": "v2.2.0",
+                    "sha256": "27df1861d1c65ef288c9296e8cf9a1ac808faad6354e72cff4f26627a4758f01"
+                },
+                {
+                    "type": "file",
+                    "path": "telegram-wrapper.sh"
+                },
+                {
+                    "type": "file",
+                    "path": "changelog2appdata.py"
+                }
+            ]
+        }
+    ]
+}

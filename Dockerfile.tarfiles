@@ -1,0 +1,41 @@
+FROM opensuse/leap:15.1
+
+RUN zypper refresh && zypper -n install \
+    xeyes \
+    gzip \
+    flatpak \
+    flatpak-builder \
+    xz \
+    librsvg \
+    gdk-pixbuf-loader-rsvg \
+  && true
+
+RUN flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
+
+#RUN flatpak install -y flathub runtime/org.gnome.Platform/x86_64/3.36
+#RUN flatpak install -y flathub runtime/org.gnome.Sdk/x86_64/3.36
+#RUN flatpak install -y flathub runtime/org.freedesktop.Platform.ffmpeg/x86_64/1.6
+#RUN flatpak install -y flathub runtime/org.kde.Sdk/x86_64/5.14
+#RUN flatpak install -y flathub runtime/org.kde.Platform/x86_64/5.14
+
+COPY tars/ /tars/
+
+RUN cd / && tar xf /tars/org.freedesktop.Platform.VAAPI.Intel-19.08.x86_64.tar.gz
+RUN cd / && tar xf /tars/org.freedesktop.Platform.GL.default-19.08.x86_64.tar.gz
+RUN cd / && tar xf /tars/org.gnome.Sdk-3.36.x86_64.tar.gz
+RUN cd / && tar xf /tars/org.gnome.Sdk.Locale-3.36.x86_64.tar.gz
+RUN cd / && tar xf /tars/org.freedesktop.Platform.openh264-2.0.x86_64.tar.gz
+RUN cd / && tar xf /tars/org.gnome.Platform-3.36.x86_64.tar.gz
+RUN cd / && tar xf /tars/org.gnome.Platform.Locale-3.36.x86_64.tar.gz
+
+# 1. [?] org.gnome.Sdk                                   x86_64            3.36              flathub            657.0 MB / 671.6 MB
+# 2. [?] org.gnome.Sdk.Locale                            x86_64            3.36              flathub            171.9 MB / 327.0 MB
+# 3. [?] org.freedesktop.Platform.GL.default             x86_64            19.08             flathub             89.1 MB / 89.1 MB
+# 4. [?] org.freedesktop.Platform.openh264               x86_64            2.0               flathub              1.5 MB / 1.5 MB
+# 5. [?] org.freedesktop.Platform.VAAPI.Intel            x86_64            19.08             flathub              8.7 MB / 8.7 MB
+
+# 1. [?] org.gnome.Platform                           x86_64            3.36             flathub           310.3 MB / 324.5 MB
+# 2. [?] org.gnome.Platform.Locale                    x86_64            3.36             flathub           167.8 MB / 323.0 MB
+# 4. [?] org.gnome.Mahjongg                           x86_64            stable           flathub             3.0 MB / 3.0 MB
+# 5. [?] org.gnome.Mahjongg.Locale                    x86_64            stable           flathub           243.2 kB / 213.0 kB
+

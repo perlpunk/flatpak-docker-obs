@@ -1,0 +1,7 @@
+FROM flatpak
+
+COPY repo /repo
+
+RUN flatpak --user remote-add --no-gpg-verify tutorial-repo /repo
+RUN flatpak --user install -y tutorial-repo org.gnome.Mahjongg
+
